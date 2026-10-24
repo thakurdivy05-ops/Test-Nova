@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Question - TEST NOVA{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- HEADER -->
+    <div class="mb-4">
+
+        <a
+            href="{{ url_for('add_question', test_id=test.id) }}"
+            class="btn btn-outline-secondary mb-3"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Back to Questions
+        </a>
+
+        <h2 class="fw-bold">
+            <i class="bi bi-pencil-square text-primary"></i>
+            Edit Question
+        </h2>
+
+        <p class="text-muted">
+            Test: <strong>{{ test.title }}</strong>
+        </p>
+
+    </div>
+
+
+    <!-- EDIT CARD -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-primary text-white p-3">
+
+            <h5 class="mb-0">
+                <i class="bi bi-question-circle"></i>
+                Edit Existing Question
+            </h5>
+
+        </div>
+
+
+        <div class="card-body p-4">
+
+            <form
+                method="POST"
+                action="{{ url_for(
+                    'edit_question',
+                    test_id=test.id,
+                    question_id=question.id
+                ) }}"
+            >
+
+                <!-- QUESTION -->
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-bold">
+                        Question
+                    </label>
+
+                    <textarea
+                        name="question_text"
+                        class="form-control"
+                        rows="4"
+                        required
+                    >{{ question.question_text }}</textarea>
+
+                </div>
+
+
+                <!-- MARKS -->
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-bold">
+                        Marks
+                    </label>
+
+                    <input
+                        type="number"
+                        name="marks"
+                        class="form-control"
+                        min="1"
+                        value="{{ question.marks }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- OPTIONS -->
+
+                <h5 class="fw-bold mb-3">
+                    Options
+                </h5>
+
+
+                {% set option_a = "" %}
+                {% set option_b = "" %}
+                {% set option_c = "" %}
+                {% set option_d = "" %}
+                {% set correct = "" %}
+
+                {% for option in question.options %}
+
+                    {% if option.option_label == "A" %}
+                        {% set option_a = option.option_text %}
+                    {% endif %}
+
+                    {% if option.option_label == "B" %}
+                        {% set option_b = option.option_text %}
+                    {% endif %}
+
+                    {% if option.option_label == "C" %}
+                        {% set option_c = option.option_text %}
+                    {% endif %}
+
+                    {% if option.option_label == "D" %}
+                        {% set option_d = option.option_text %}
+                    {% endif %}
+
+                    {% if option.is_correct %}
+                        {% set correct = option.option_label %}
+                    {% endif %}
+
+                {% endfor %}
+
+
+                <!-- OPTION A -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Option A
+                    </label>
+
+                    <input
+                        type="text"
+                        name="option_a"
+                        class="form-control"
+                        value="{{ option_a }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- OPTION B -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Option B
+                    </label>
+
+                    <input
+                        type="text"
+                        name="option_b"
+                        class="form-control"
+                        value="{{ option_b }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- OPTION C -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Option C
+                    </label>
+
+                    <input
+                        type="text"
+                        name="option_c"
+                        class="form-control"
+                        value="{{ option_c }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- OPTION D -->
+
+                <div class="mb-3">
+
+                    <label class="form-label fw-bold">
+                        Option D
+                    </label>
+
+                    <input
+                        type="text"
+                        name="option_d"
+                        class="form-control"
+                        value="{{ option_d }}"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- CORRECT ANSWER -->
+
+                <div class="mb-4">
+
+                    <label class="form-label fw-bold">
+                        Correct Answer
+                    </label>
+
+                    <select
+                        name="correct_option"
+                        class="form-select"
+                        required
+                    >
+
+                        <option value="">
+                            Select Correct Option
+                        </option>
+
+                        <option
+                            value="A"
+                            {% if correct == "A" %}selected{% endif %}
+                        >
+                            Option A
+                        </option>
+
+                        <option
+                            value="B"
+                            {% if correct == "B" %}selected{% endif %}
+                        >
+                            Option B
+                        </option>
+
+                        <option
+                            value="C"
+                            {% if correct == "C" %}selected{% endif %}
+                        >
+                            Option C
+                        </option>
+
+                        <option
+                            value="D"
+                            {% if correct == "D" %}selected{% endif %}
+                        >
+                            Option D
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="d-flex gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary px-4"
+                    >
+
+                        <i class="bi bi-check-circle"></i>
+                        Save Changes
+
+                    </button>
+
+
+                    <a
+                        href="{{ url_for(
+                            'add_question',
+                            test_id=test.id
+                        ) }}"
+                        class="btn btn-outline-secondary px-4"
+                    >
+
+                        <i class="bi bi-x-circle"></i>
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

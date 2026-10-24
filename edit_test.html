@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Test - TEST NOVA{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0">
+
+                <div class="card-header bg-primary text-white py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil-square"></i>
+                        Edit Test
+                    </h4>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form method="POST">
+
+                        <!-- Test Title -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Test Title
+                            </label>
+
+                            <input
+                                type="text"
+                                name="title"
+                                class="form-control"
+                                value="{{ test.title }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Subject -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Subject
+                            </label>
+
+                            <input
+                                type="text"
+                                name="subject"
+                                class="form-control"
+                                value="{{ test.subject }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Category -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Category
+                            </label>
+
+                            <input
+                                type="text"
+                                name="category"
+                                class="form-control"
+                                value="{{ test.category }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <!-- Description -->
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Description
+                            </label>
+
+                            <textarea
+                                name="description"
+                                class="form-control"
+                                rows="4"
+                            >{{ test.description or "" }}</textarea>
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <!-- Time Limit -->
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Time Limit (Minutes)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="time_limit"
+                                    class="form-control"
+                                    value="{{ test.time_limit }}"
+                                    min="1"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- Total Marks -->
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Total Marks
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="total_marks"
+                                    class="form-control"
+                                    value="{{ test.total_marks }}"
+                                    min="1"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <!-- Passing Marks -->
+                            <div class="col-md-4 mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Passing Marks
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="passing_marks"
+                                    class="form-control"
+                                    value="{{ test.passing_marks }}"
+                                    min="0"
+                                    required
+                                >
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Buttons -->
+
+                        <div class="d-flex gap-2 mt-4">
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                <i class="bi bi-check-circle"></i>
+                                Save Changes
+                            </button>
+
+                            <a
+                                href="{{ url_for('teacher_dashboard') }}"
+                                class="btn btn-secondary"
+                            >
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

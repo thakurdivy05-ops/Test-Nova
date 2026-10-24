@@ -1,0 +1,728 @@
+{% extends "base.html" %}
+
+{% block title %}{{ test.title }} - TEST NOVA{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="row g-4">
+
+        <!-- MAIN TEST AREA -->
+        <div class="col-lg-9">
+
+            <!-- Test Header -->
+            <div class="card border-0 shadow-sm mb-4">
+
+                <div class="card-body">
+
+                    <div class="row align-items-center">
+
+                        <div class="col-md-8">
+
+                            <h3 class="fw-bold mb-1">
+                                {{ test.title }}
+                            </h3>
+
+                            <p class="text-muted mb-0">
+                                {{ test.subject }}
+                                •
+                                {{ test.questions|length }} Questions
+                                •
+                                {{ test.total_marks }} Marks
+                            </p>
+
+                        </div>
+
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                            <div
+                                id="timer"
+                                class="fs-2 fw-bold text-danger"
+                                data-time-limit="{{ test.time_limit }}"
+                            >
+                                Loading...
+                            </div>
+
+                            <small class="text-muted">
+                                Time Remaining
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ANTI-CHEATING NOTICE -->
+            <div class="alert alert-warning shadow-sm d-flex align-items-start gap-3 mb-4">
+                <i class="bi bi-shield-exclamation fs-4"></i>
+                <div>
+                    <strong>Test Security</strong>
+                    <div class="small mt-1">
+                        Do not switch tabs, copy text, use right-click, or use
+                        restricted keyboard shortcuts during the test.
+                        After 3 tab switches, the test will be submitted automatically.
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- TEST FORM -->
+
+            <form
+                id="testForm"
+                method="POST"
+                action="{{ url_for('submit_test', test_id=test.id) }}"
+            >
+
+                {% for question in test.questions %}
+
+                {% set question_number = loop.index %}
+
+                <div
+                    class="question-card card border-0 shadow-sm mb-4"
+                    id="question-{{ question_number }}"
+                >
+
+                    <div class="card-body p-4">
+
+                        <!-- Question Header -->
+
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+
+                            <h5 class="fw-bold mb-0">
+                                Question {{ question_number }}
+                            </h5>
+
+                            <div class="d-flex align-items-center gap-2">
+
+                                <button
+                                    type="button"
+                                    class="btn btn-sm btn-outline-warning review-button"
+                                    data-question="{{ question_number }}"
+                                >
+                                    <i class="bi bi-bookmark"></i>
+                                    Mark for Review
+                                </button>
+
+                                <span class="badge bg-primary">
+                                    {{ question.marks }} Mark
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Question Text -->
+
+                        <p class="fs-5 fw-medium">
+                            {{ question.question_text }}
+                        </p>
+
+
+                        <!-- OPTIONS -->
+
+                        <div class="mt-4">
+
+                            {% for option in question.options %}
+
+                            <div class="form-check border rounded p-3 mb-3 option-box">
+
+                                <input
+                                    class="form-check-input ms-1 answer-option"
+                                    type="radio"
+                                    name="question_{{ question.id }}"
+                                    value="{{ option.id }}"
+                                    id="option_{{ option.id }}"
+                                    data-question="{{ question_number }}"
+                                >
+
+                                <label
+                                    class="form-check-label ms-2 w-100"
+                                    for="option_{{ option.id }}"
+                                >
+
+                                    <strong>
+                                        {{ option.option_label }}.
+                                    </strong>
+
+                                    {{ option.option_text }}
+
+                                </label>
+
+                            </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <!-- QUESTION NAVIGATION BUTTONS -->
+
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+
+                            {% if not loop.first %}
+                            <button
+                                type="button"
+                                class="btn btn-outline-secondary prev-question"
+                                data-target="question-{{ loop.index - 1 }}"
+                            >
+                                <i class="bi bi-arrow-left"></i>
+                                Previous
+                            </button>
+                            {% else %}
+                            <div></div>
+                            {% endif %}
+
+                            {% if not loop.last %}
+                            <button
+                                type="button"
+                                class="btn btn-primary next-question"
+                                data-target="question-{{ loop.index + 1 }}"
+                            >
+                                Next
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+                            {% else %}
+                            <div></div>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+
+                <!-- SUBMIT -->
+
+                <div class="card border-0 shadow-sm mb-5">
+
+                    <div class="card-body text-center p-4">
+
+                        <h5 class="fw-bold">
+                            Finished?
+                        </h5>
+
+                        <p class="text-muted">
+                            Review your answers before submitting.
+                        </p>
+
+                        <button
+                            type="submit"
+                            class="btn btn-success btn-lg px-5"
+                            id="submitButton"
+                        >
+
+                            <i class="bi bi-send"></i>
+                            Submit Test
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- QUESTION NAVIGATION -->
+
+        <div class="col-lg-3">
+
+            <div
+                class="card border-0 shadow-sm"
+                style="position: sticky; top: 20px;"
+            >
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold mb-3">
+
+                        <i class="bi bi-grid-3x3-gap"></i>
+                        Questions
+
+                    </h5>
+
+
+                    <div class="d-flex flex-wrap gap-2">
+
+                        {% for question in test.questions %}
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary question-number"
+                            data-target="question-{{ loop.index }}"
+                            data-question="{{ loop.index }}"
+                        >
+                            {{ loop.index }}
+                        </button>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <div class="small">
+
+                        <div class="mb-2">
+
+                            <span class="badge bg-primary">
+                                &nbsp;
+                            </span>
+
+                            Current Question
+
+                        </div>
+
+
+                        <div class="mb-2">
+
+                            <span class="badge bg-success">
+                                &nbsp;
+                            </span>
+
+                            Answered
+
+                        </div>
+
+
+                        <div>
+
+                            <span class="badge bg-secondary">
+                                &nbsp;
+                            </span>
+
+                            Unanswered
+
+                        </div>
+
+                        <div class="mb-2">
+
+                            <span class="badge bg-warning text-dark">
+                                &nbsp;
+                            </span>
+
+                            Marked for Review
+
+                        </div>
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <div class="text-center">
+
+                        <p class="text-muted small mb-1">
+                            Test Duration
+                        </p>
+
+                        <strong>
+                            {{ test.time_limit }} Minutes
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const testForm =
+        document.getElementById("testForm");
+
+    const timerElement =
+        document.getElementById("timer");
+
+
+    /* =========================
+       ANTI-CHEATING PROTECTION
+    ========================= */
+
+    let tabSwitchCount = 0;
+    const maxTabSwitches = 3;
+    let testSubmitted = false;
+
+
+    // Disable right-click
+    document.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+    });
+
+
+    // Disable copy, cut and paste
+    document.addEventListener("copy", function (event) {
+        event.preventDefault();
+    });
+
+    document.addEventListener("cut", function (event) {
+        event.preventDefault();
+    });
+
+    document.addEventListener("paste", function (event) {
+        event.preventDefault();
+    });
+
+
+    // Disable text selection
+    document.addEventListener("selectstart", function (event) {
+        event.preventDefault();
+    });
+
+
+    // Detect tab/window switching
+    document.addEventListener("visibilitychange", function () {
+
+        if (document.hidden && !testSubmitted) {
+
+            tabSwitchCount++;
+
+
+            if (tabSwitchCount < maxTabSwitches) {
+
+                alert(
+                    "Warning " +
+                    tabSwitchCount +
+                    "/" +
+                    maxTabSwitches +
+                    ": Please stay on the TEST NOVA test page."
+                );
+
+            } else {
+
+                alert(
+                    "Maximum tab-switch limit reached. " +
+                    "Your test will be submitted automatically."
+                );
+
+                testSubmitted = true;
+
+                testForm.submit();
+
+            }
+
+        }
+
+    });
+
+
+    // Disable common keyboard shortcuts
+    document.addEventListener("keydown", function (event) {
+
+        if (
+            (
+                event.ctrlKey &&
+                ["c", "x", "v", "u", "s", "a"].includes(
+                    event.key.toLowerCase()
+                )
+            )
+            ||
+            event.key === "F12"
+        ) {
+
+            event.preventDefault();
+
+            alert(
+                "This keyboard shortcut is disabled during the test."
+            );
+
+        }
+
+    });
+
+
+    /* =========================
+       TIMER
+    ========================= */
+
+    let timeRemaining =
+        parseInt(timerElement.dataset.timeLimit) * 60;
+
+
+    function updateTimer() {
+
+        const minutes =
+            Math.floor(timeRemaining / 60);
+
+        const seconds =
+            timeRemaining % 60;
+
+
+        timerElement.textContent =
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(seconds).padStart(2, "0");
+
+
+        if (timeRemaining <= 60) {
+
+            timerElement.classList.add("text-danger");
+
+        }
+
+
+        if (timeRemaining <= 0) {
+
+            clearInterval(timerInterval);
+
+            alert(
+                "Time is up! Your test will be submitted automatically."
+            );
+
+            testSubmitted = true;
+
+            testForm.submit();
+
+            return;
+
+        }
+
+
+        timeRemaining--;
+
+    }
+
+
+    updateTimer();
+
+
+    const timerInterval =
+        setInterval(updateTimer, 1000);
+
+
+    // Mark the test as submitted when the student
+    // submits normally.
+    testForm.addEventListener("submit", function () {
+        testSubmitted = true;
+    });
+
+
+    /* =========================
+       QUESTION NAVIGATION
+    ========================= */
+
+    const questionButtons =
+        document.querySelectorAll(".question-number");
+
+
+    questionButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const targetId =
+                button.dataset.target;
+
+            const target =
+                document.getElementById(targetId);
+
+
+            if (target) {
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }
+
+        });
+
+    });
+
+
+    /* =========================
+       ANSWER TRACKING
+    ========================= */
+
+    const answerOptions =
+        document.querySelectorAll(".answer-option");
+
+
+    answerOptions.forEach(function (option) {
+
+        option.addEventListener("change", function () {
+
+            const questionNumber =
+                option.dataset.question;
+
+            const button =
+                document.querySelector(
+                    '.question-number[data-target="question-' +
+                    questionNumber +
+                    '"]'
+                );
+
+
+            if (button) {
+
+                // Keep yellow if question is marked for review
+                if (!button.classList.contains("marked-review")) {
+
+                    button.classList.remove(
+                        "btn-outline-primary"
+                    );
+
+                    button.classList.add(
+                        "btn-success"
+                    );
+
+                    button.classList.add(
+                        "text-white"
+                    );
+
+                }
+
+            }
+
+        });
+
+    });
+
+
+    /* =========================
+       MARK FOR REVIEW
+    ========================= */
+
+    const reviewButtons =
+        document.querySelectorAll(".review-button");
+
+    reviewButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            const questionNumber =
+                button.dataset.question;
+
+            const paletteButton =
+                document.querySelector(
+                    '.question-number[data-question="' +
+                    questionNumber +
+                    '"]'
+                );
+
+            if (!paletteButton) {
+                return;
+            }
+
+            const isMarked =
+                paletteButton.classList.contains("marked-review");
+
+            if (isMarked) {
+
+                paletteButton.classList.remove(
+                    "marked-review",
+                    "btn-warning",
+                    "text-dark"
+                );
+
+                paletteButton.classList.add(
+                    "btn-outline-primary"
+                );
+
+                button.classList.remove("active");
+
+                button.innerHTML =
+                    '<i class="bi bi-bookmark"></i> Mark for Review';
+
+            } else {
+
+                paletteButton.classList.remove(
+                    "btn-outline-primary",
+                    "btn-success",
+                    "text-white"
+                );
+
+                paletteButton.classList.add(
+                    "marked-review",
+                    "btn-warning",
+                    "text-dark"
+                );
+
+                button.classList.add("active");
+
+                button.innerHTML =
+                    '<i class="bi bi-bookmark-fill"></i> Marked for Review';
+
+            }
+
+        });
+
+    });
+
+
+    /* =========================
+       PREVIOUS / NEXT
+    ========================= */
+
+    function goToQuestion(targetId) {
+
+        const target =
+            document.getElementById(targetId);
+
+        if (target) {
+
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }
+
+    }
+
+
+    const nextButtons =
+        document.querySelectorAll(".next-question");
+
+    nextButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            goToQuestion(button.dataset.target);
+
+        });
+
+    });
+
+
+    const previousButtons =
+        document.querySelectorAll(".prev-question");
+
+    previousButtons.forEach(function (button) {
+
+        button.addEventListener("click", function () {
+
+            goToQuestion(button.dataset.target);
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

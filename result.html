@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Test Result - TEST NOVA{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+
+        <i class="bi bi-trophy fs-1 text-warning"></i>
+
+        <h2 class="fw-bold mt-3">
+            Test Completed!
+        </h2>
+
+        <p class="text-muted">
+            {{ result.test.title }}
+        </p>
+
+    </div>
+
+
+    <!-- Score -->
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-5 text-center">
+
+                    {% if result.passed %}
+
+                    <div class="alert alert-success">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                        Congratulations! You Passed.
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="alert alert-danger">
+
+                        <i class="bi bi-x-circle-fill"></i>
+
+                        You did not pass this test.
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <h1 class="display-3 fw-bold">
+
+                        {{ result.marks_obtained }}
+
+                        <span class="text-muted fs-3">
+                            / {{ result.total_marks }}
+                        </span>
+
+                    </h1>
+
+
+                    <p class="fs-4">
+
+                        {{ "%.1f"|format(result.percentage) }}%
+
+                    </p>
+
+
+                    <div class="row mt-4">
+
+                        <div class="col-6 col-md-3">
+
+                            <h4 class="fw-bold">
+                                {{ result.total_questions }}
+                            </h4>
+
+                            <small class="text-muted">
+                                Questions
+                            </small>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3">
+
+                            <h4 class="fw-bold text-primary">
+                                {{ result.attempted }}
+                            </h4>
+
+                            <small class="text-muted">
+                                Attempted
+                            </small>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3 mt-4 mt-md-0">
+
+                            <h4 class="fw-bold text-success">
+                                {{ result.correct }}
+                            </h4>
+
+                            <small class="text-muted">
+                                Correct
+                            </small>
+
+                        </div>
+
+
+                        <div class="col-6 col-md-3 mt-4 mt-md-0">
+
+                            <h4 class="fw-bold text-danger">
+                                {{ result.wrong }}
+                            </h4>
+
+                            <small class="text-muted">
+                                Wrong
+                            </small>
+
+                        </div>
+
+                    </div>
+
+
+                    <hr class="my-5">
+
+
+                    <div class="d-flex justify-content-center gap-2">
+
+                        <a
+                            href="{{ url_for('student_dashboard') }}"
+                            class="btn btn-primary"
+                        >
+
+                            <i class="bi bi-house"></i>
+
+                            Student Dashboard
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

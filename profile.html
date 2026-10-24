@@ -1,0 +1,567 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Profile - TEST NOVA{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- ========================================= -->
+    <!-- PROFILE HEADER -->
+    <!-- ========================================= -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="row align-items-center">
+
+                <!-- Teacher Information -->
+                <div class="col-md-8">
+
+                    <div class="d-flex align-items-center">
+
+                        <!-- Profile Icon -->
+                        <div
+                            class="rounded-circle bg-primary text-white
+                            d-flex align-items-center justify-content-center
+                            me-3 shadow-sm"
+                            style="width: 85px; height: 85px;"
+                        >
+
+                            <i class="bi bi-person-fill fs-1"></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2 class="fw-bold mb-1">
+                                {{ teacher.name }}
+                            </h2>
+
+                            <p class="text-muted mb-2">
+
+                                <i class="bi bi-envelope me-1"></i>
+
+                                {{ teacher.email }}
+
+                            </p>
+
+
+                            <span class="badge bg-primary">
+
+                                <i class="bi bi-person-badge me-1"></i>
+
+                                Teacher
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Dashboard Button -->
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                    <a
+                        href="{{ url_for('teacher_dashboard') }}"
+                        class="btn btn-outline-primary"
+                    >
+
+                        <i class="bi bi-arrow-left me-1"></i>
+
+                        Back to Dashboard
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================= -->
+    <!-- STATISTICS -->
+    <!-- ========================================= -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- Total Tests -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-file-earmark-text fs-1 text-primary"></i>
+
+                    <h2 class="fw-bold mt-2 mb-1">
+
+                        {{ total_tests }}
+
+                    </h2>
+
+                    <p class="text-muted mb-0">
+
+                        Total Tests Created
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Published Tests -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-check-circle fs-1 text-success"></i>
+
+                    <h2 class="fw-bold mt-2 mb-1">
+
+                        {{ published_tests }}
+
+                    </h2>
+
+                    <p class="text-muted mb-0">
+
+                        Published Tests
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Total Questions -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center">
+
+                    <i class="bi bi-question-circle fs-1 text-warning"></i>
+
+                    <h2 class="fw-bold mt-2 mb-1">
+
+                        {{ total_questions }}
+
+                    </h2>
+
+                    <p class="text-muted mb-0">
+
+                        Total Questions
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================= -->
+    <!-- TEST CREATION SUMMARY -->
+    <!-- ========================================= -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-header bg-white py-3">
+
+            <h5 class="fw-bold mb-0">
+
+                <i class="bi bi-bar-chart-line me-2 text-primary"></i>
+
+                Test Creation Summary
+
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="row g-4">
+
+
+                <!-- Total Tests -->
+
+                <div class="col-md-6">
+
+                    <div class="p-3 bg-light rounded">
+
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span class="fw-semibold">
+
+                                Tests Created
+
+                            </span>
+
+                            <span class="fw-bold text-primary">
+
+                                {{ total_tests }}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="progress" style="height: 10px;">
+
+                            {% if total_tests > 0 %}
+
+                                {% set published_width =
+                                    (published_tests / total_tests * 100) %}
+
+                            {% else %}
+
+                                {% set published_width = 0 %}
+
+                            {% endif %}
+
+
+                            <div
+                                class="progress-bar bg-success teacher-progress"
+                                data-width="{{ published_width }}"
+                                role="progressbar"
+                                aria-valuenow="{{ published_width }}"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                            ></div>
+
+                        </div>
+
+
+                        <small class="text-muted">
+
+                            {{ published_tests }} published
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Draft Tests -->
+
+                <div class="col-md-6">
+
+                    <div class="p-3 bg-light rounded">
+
+                        {% if total_tests > published_tests %}
+
+                            {% set draft_tests =
+                                total_tests - published_tests %}
+
+                        {% else %}
+
+                            {% set draft_tests = 0 %}
+
+                        {% endif %}
+
+
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span class="fw-semibold">
+
+                                Draft / Unpublished Tests
+
+                            </span>
+
+                            <span class="fw-bold text-warning">
+
+                                {{ draft_tests }}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="progress" style="height: 10px;">
+
+                            {% if total_tests > 0 %}
+
+                                {% set draft_width =
+                                    (draft_tests / total_tests * 100) %}
+
+                            {% else %}
+
+                                {% set draft_width = 0 %}
+
+                            {% endif %}
+
+
+                            <div
+                                class="progress-bar bg-warning teacher-progress"
+                                data-width="{{ draft_width }}"
+                                role="progressbar"
+                                aria-valuenow="{{ draft_width }}"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                            ></div>
+
+                        </div>
+
+
+                        <small class="text-muted">
+
+                            Tests not currently published
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================= -->
+    <!-- ACCOUNT INFORMATION -->
+    <!-- ========================================= -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+
+        <div class="card-header bg-white p-4">
+
+            <h4 class="fw-bold mb-0">
+
+                <i class="bi bi-person-lines-fill text-primary me-2"></i>
+
+                Account Information
+
+            </h4>
+
+        </div>
+
+
+        <div class="card-body p-4">
+
+            <div class="row">
+
+
+                <!-- Full Name -->
+
+                <div class="col-md-6 mb-4">
+
+                    <label class="text-muted small">
+
+                        Full Name
+
+                    </label>
+
+                    <div class="fw-semibold mt-1">
+
+                        {{ teacher.name }}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Email -->
+
+                <div class="col-md-6 mb-4">
+
+                    <label class="text-muted small">
+
+                        Email Address
+
+                    </label>
+
+                    <div class="fw-semibold mt-1">
+
+                        {{ teacher.email }}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Account Type -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="text-muted small">
+
+                        Account Type
+
+                    </label>
+
+                    <div class="fw-semibold mt-1">
+
+                        <span class="badge bg-primary">
+
+                            <i class="bi bi-person-badge me-1"></i>
+
+                            Teacher
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Platform -->
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="text-muted small">
+
+                        Platform
+
+                    </label>
+
+                    <div class="fw-semibold mt-1">
+
+                        TEST NOVA
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ========================================= -->
+    <!-- ACCOUNT SECURITY -->
+    <!-- ========================================= -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+
+            <h5 class="fw-bold mb-0">
+
+                <i class="bi bi-shield-lock me-2 text-primary"></i>
+
+                Account Security
+
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="d-flex align-items-center
+                        justify-content-between
+                        flex-wrap gap-3">
+
+
+                <div>
+
+                    <h6 class="fw-bold mb-1">
+
+                        Password
+
+                    </h6>
+
+                    <p class="text-muted mb-0">
+
+                        Keep your TEST NOVA teacher account secure
+                        with a strong password.
+
+                    </p>
+
+                </div>
+
+
+                <a
+                    href="{{ url_for('change_password') }}"
+                    class="btn btn-primary"
+                >
+
+                    <i class="bi bi-key me-1"></i>
+
+                    Change Password
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ========================================= -->
+<!-- PROGRESS BAR JAVASCRIPT -->
+<!-- ========================================= -->
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const progressBars =
+            document.querySelectorAll(".teacher-progress");
+
+
+        progressBars.forEach(function (bar) {
+
+            let width =
+                parseFloat(bar.dataset.width) || 0;
+
+
+            width =
+                Math.max(0, Math.min(width, 100));
+
+
+            bar.style.width = width + "%";
+
+        });
+
+    });
+
+</script>
+
+
+{% endblock %}

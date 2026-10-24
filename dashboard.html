@@ -1,0 +1,598 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard - TEST NOVA{% endblock %}
+
+{% block content %}
+
+<div class="container py-4 py-md-5">
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <div class="row align-items-center mb-4">
+
+        <div class="col-md-8">
+
+            <div class="d-flex align-items-center gap-3">
+
+                <div
+                    class="bg-primary text-white rounded-3 d-flex align-items-center justify-content-center"
+                    style="width:55px;height:55px;"
+                >
+                    <i class="bi bi-speedometer2 fs-3"></i>
+                </div>
+
+                <div>
+
+                    <h2 class="fw-bold mb-1">
+                        Teacher Dashboard
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Create, manage and monitor your tests.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-4 mt-3 mt-md-0 text-md-end">
+
+            <a
+                href="{{ url_for('teacher_profile') }}"
+                class="btn btn-outline-primary me-2"
+            >
+                <i class="bi bi-person-circle"></i>
+                Profile
+            </a>
+
+            <a
+                href="{{ url_for('create_test') }}"
+                class="btn btn-primary"
+            >
+                <i class="bi bi-plus-circle"></i>
+                Create Test
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         STATISTICS
+    ========================== -->
+
+    <div class="row g-3 g-lg-4 mb-5">
+
+        <!-- Total Tests -->
+
+        <div class="col-6 col-lg-4">
+
+            <div class="card border-0 shadow-sm h-100 teacher-stat-card">
+
+                <div class="card-body p-3 p-lg-4">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+
+                            <p class="text-muted small mb-2">
+                                Total Tests
+                            </p>
+
+                            <h2 class="fw-bold mb-0">
+                                {{ total_tests }}
+                            </h2>
+
+                        </div>
+
+                        <div class="text-primary fs-2">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Published Tests -->
+
+        <div class="col-6 col-lg-4">
+
+            <div class="card border-0 shadow-sm h-100 teacher-stat-card">
+
+                <div class="card-body p-3 p-lg-4">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+
+                            <p class="text-muted small mb-2">
+                                Published Tests
+                            </p>
+
+                            <h2 class="fw-bold text-success mb-0">
+                                {{ published_tests }}
+                            </h2>
+
+                        </div>
+
+                        <div class="text-success fs-2">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Questions -->
+
+        <div class="col-12 col-lg-4">
+
+            <div class="card border-0 shadow-sm h-100 teacher-stat-card">
+
+                <div class="card-body p-3 p-lg-4">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+
+                            <p class="text-muted small mb-2">
+                                Total Questions
+                            </p>
+
+                            <h2 class="fw-bold text-warning mb-0">
+                                {{ total_questions }}
+                            </h2>
+
+                        </div>
+
+                        <div class="text-warning fs-2">
+                            <i class="bi bi-question-circle"></i>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         MY TESTS
+    ========================== -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white border-0 p-4">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+
+                <div>
+
+                    <h4 class="fw-bold mb-1">
+
+                        <i class="bi bi-journal-text text-primary"></i>
+
+                        My Tests
+
+                    </h4>
+
+                    <p class="text-muted mb-0">
+                        Manage all the tests you have created.
+                    </p>
+
+                </div>
+
+
+                {% if tests %}
+
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 mt-3 mt-md-0">
+
+                    {{ total_tests }}
+                    Test{% if total_tests != 1 %}s{% endif %}
+
+                </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            {% if tests %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th class="px-4">
+                                Test
+                            </th>
+
+                            <th>
+                                Subject
+                            </th>
+
+                            <th>
+                                Questions
+                            </th>
+
+                            <th>
+                                Time
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th class="pe-4">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for test in tests %}
+
+                        <tr>
+
+                            <!-- =========================
+                                 TEST
+                            ========================== -->
+
+                            <td class="px-4">
+
+                                <div class="fw-semibold">
+                                    {{ test.title }}
+                                </div>
+
+                                <small class="text-muted">
+                                    {{ test.category }}
+                                </small>
+
+                            </td>
+
+
+                            <!-- =========================
+                                 SUBJECT
+                            ========================== -->
+
+                            <td>
+
+                                <span class="text-muted">
+
+                                    <i class="bi bi-book me-1"></i>
+
+                                    {{ test.subject }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- =========================
+                                 QUESTIONS
+                            ========================== -->
+
+                            <td>
+
+                                <span class="badge bg-light text-dark border">
+
+                                    <i class="bi bi-question-circle me-1"></i>
+
+                                    {{ test.questions|length }}
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- =========================
+                                 TIME
+                            ========================== -->
+
+                            <td>
+
+                                <span class="text-muted">
+
+                                    <i class="bi bi-clock me-1"></i>
+
+                                    {{ test.time_limit }} min
+
+                                </span>
+
+                            </td>
+
+
+                            <!-- =========================
+                                 STATUS
+                            ========================== -->
+
+                            <td>
+
+                                {% if test.published %}
+
+                                <span class="badge bg-success">
+
+                                    <i class="bi bi-check-circle me-1"></i>
+
+                                    Published
+
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-warning text-dark">
+
+                                    <i class="bi bi-pencil-square me-1"></i>
+
+                                    Draft
+
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- =========================
+                                 ACTIONS
+                            ========================== -->
+
+                            <td class="pe-4">
+
+                                <div class="d-flex gap-1 flex-wrap">
+
+                                    <!-- Edit -->
+
+                                    <a
+                                        href="{{ url_for('edit_test', test_id=test.id) }}"
+                                        class="btn btn-sm btn-outline-warning"
+                                        title="Edit Test"
+                                    >
+
+                                        <i class="bi bi-pencil"></i>
+
+                                        <span class="d-none d-xl-inline">
+                                            Edit
+                                        </span>
+
+                                    </a>
+
+
+                                    <!-- Questions -->
+
+                                    <a
+                                        href="{{ url_for('add_question', test_id=test.id) }}"
+                                        class="btn btn-sm btn-primary"
+                                        title="Manage Questions"
+                                    >
+
+                                        <i class="bi bi-list-check"></i>
+
+                                        <span class="d-none d-xl-inline">
+                                            Questions
+                                        </span>
+
+                                    </a>
+
+
+                                    {% if test.published %}
+
+                                    <!-- Results -->
+
+                                    <a
+                                        href="{{ url_for('teacher_test_results', test_id=test.id) }}"
+                                        class="btn btn-sm btn-outline-primary"
+                                        title="View Results"
+                                    >
+
+                                        <i class="bi bi-bar-chart"></i>
+
+                                        <span class="d-none d-xl-inline">
+                                            Results
+                                        </span>
+
+                                    </a>
+
+                                    {% else %}
+
+                                    <!-- Publish -->
+
+                                    <a
+                                        href="{{ url_for('publish_test', test_id=test.id) }}"
+                                        class="btn btn-sm btn-outline-success"
+                                        title="Publish Test"
+                                    >
+
+                                        <i class="bi bi-cloud-upload"></i>
+
+                                        <span class="d-none d-xl-inline">
+                                            Publish
+                                        </span>
+
+                                    </a>
+
+                                    {% endif %}
+
+
+                                    <!-- Delete -->
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('delete_test', test_id=test.id) }}"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Are you sure you want to delete this test? This action cannot be undone.');"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            title="Delete Test"
+                                        >
+
+                                            <i class="bi bi-trash"></i>
+
+                                            <span class="d-none d-xl-inline">
+                                                Delete
+                                            </span>
+
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            {% else %}
+
+            <!-- =========================
+                 EMPTY STATE
+            ========================== -->
+
+            <div class="text-center py-5 px-3">
+
+                <i class="bi bi-file-earmark-plus display-3 text-muted"></i>
+
+                <h4 class="fw-bold mt-3">
+                    No Tests Created Yet
+                </h4>
+
+                <p class="text-muted mb-4">
+                    Create your first test and add questions for students.
+                </p>
+
+                <a
+                    href="{{ url_for('create_test') }}"
+                    class="btn btn-primary"
+                >
+
+                    <i class="bi bi-plus-circle me-1"></i>
+
+                    Create Your First Test
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     PAGE-SPECIFIC STYLES
+========================== -->
+
+<style>
+
+    .teacher-stat-card {
+
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+
+    }
+
+
+    .teacher-stat-card:hover {
+
+        transform: translateY(-4px);
+
+        box-shadow:
+            0 0.75rem 1.5rem rgba(0, 0, 0, 0.08) !important;
+
+    }
+
+
+    .table tbody tr {
+
+        transition:
+            background-color 0.15s ease;
+
+    }
+
+
+    .table tbody tr:hover {
+
+        background-color: rgba(13, 110, 253, 0.03);
+
+    }
+
+
+    .btn {
+
+        transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+
+    }
+
+
+    .btn:hover {
+
+        transform: translateY(-1px);
+
+    }
+
+
+    @media (max-width: 767px) {
+
+        .container {
+
+            padding-left: 16px;
+            padding-right: 16px;
+
+        }
+
+    }
+
+</style>
+
+{% endblock %}

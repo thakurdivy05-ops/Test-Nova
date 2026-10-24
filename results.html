@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}Test Results - TEST NOVA{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                {{ test.title }}
+            </h2>
+
+            <p class="text-muted mb-0">
+                Student Results
+            </p>
+
+        </div>
+
+        <a
+            href="{{ url_for('teacher_dashboard') }}"
+            class="btn btn-outline-secondary"
+        >
+            <i class="bi bi-arrow-left"></i>
+            Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- Test Information -->
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Subject
+                    </small>
+
+                    <h5 class="fw-bold mt-2">
+                        {{ test.subject }}
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Questions
+                    </small>
+
+                    <h5 class="fw-bold mt-2">
+                        {{ test.questions|length }}
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Marks
+                    </small>
+
+                    <h5 class="fw-bold mt-2">
+                        {{ test.total_marks }}
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-3">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Students Attempted
+                    </small>
+
+                    <h5 class="fw-bold mt-2">
+                        {{ results|length }}
+                    </h5>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Results Table -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white p-4">
+
+            <h4 class="fw-bold mb-0">
+
+                <i class="bi bi-people"></i>
+
+                Student Results
+
+            </h4>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            {% if results %}
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th class="px-4">
+                                Student
+                            </th>
+
+                            <th>
+                                Attempted
+                            </th>
+
+                            <th>
+                                Correct
+                            </th>
+
+                            <th>
+                                Wrong
+                            </th>
+
+                            <th>
+                                Score
+                            </th>
+
+                            <th>
+                                Percentage
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+                             
+                            <th>
+                                Submitted On
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for result in results %}
+
+                        <tr>
+
+                            <td class="px-4">
+
+                                <strong>
+                                    {{ result.student.name }}
+                                </strong>
+
+                                <br>
+
+                                <small class="text-muted">
+                                    {{ result.student.email }}
+                                </small>
+
+                            </td>
+
+
+                            <td>
+                                {{ result.attempted }}
+                                /
+                                {{ result.total_questions }}
+                            </td>
+
+
+                            <td>
+
+                                <span class="text-success fw-bold">
+                                    {{ result.correct }}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="text-danger fw-bold">
+                                    {{ result.wrong }}
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ result.marks_obtained }}
+                                    /
+                                    {{ result.total_marks }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                {{ "%.1f"|format(result.percentage) }}%
+
+                            </td>
+
+
+                            <td>
+
+                                {% if result.passed %}
+
+                                <span class="badge bg-success">
+                                    Passed
+                                </span>
+
+                                {% else %}
+
+                                <span class="badge bg-danger">
+                                    Failed
+                                </span>
+
+                                {% endif %}
+
+                            </td>
+                            <td>
+    {% if result.completed_at %}
+        <small>
+            {{ result.completed_at.strftime('%d %b %Y') }}
+        </small>
+        <br>
+        <small class="text-muted">
+            {{ result.completed_at.strftime('%I:%M %p') }}
+        </small>
+    {% else %}
+        <span class="text-muted">—</span>
+    {% endif %}
+</td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="text-center p-5">
+
+                <i class="bi bi-people fs-1 text-muted"></i>
+
+                <h4 class="mt-3">
+                    No students have attempted this test yet.
+                </h4>
+
+                <p class="text-muted">
+                    Results will appear here after students complete the test.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
